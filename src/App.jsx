@@ -4,6 +4,7 @@ import { AppProvider, useApp } from './lib/AppContext.jsx'
 import * as store from './lib/store.js'
 import Logo from './components/Logo.jsx'
 import Icon from './components/Icon.jsx'
+import { GlossaryProvider } from './components/Glossary.jsx'
 import AuthPage from './pages/AuthPage.jsx'
 import Today from './pages/Today.jsx'
 import Plan from './pages/Plan.jsx'
@@ -21,7 +22,9 @@ export default function App() {
   return (
     <AppProvider>
       <BrowserRouter>
-        <Gate />
+        <GlossaryProvider>
+          <Gate />
+        </GlossaryProvider>
       </BrowserRouter>
     </AppProvider>
   )
