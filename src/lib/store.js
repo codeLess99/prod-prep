@@ -7,7 +7,7 @@ export const isLocalMode = !url || !key
 export const googleEnabled = import.meta.env.VITE_ENABLE_GOOGLE === 'true'
 export const allowedDomain = (import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN || '').trim().toLowerCase()
 
-const supabase = isLocalMode ? null : createClient(url, key)
+export const supabase = isLocalMode ? null : createClient(url, key)
 
 // ---------- Local mode (no backend configured): everything lives in this browser ----------
 const LS = 'pmprep.local.'
