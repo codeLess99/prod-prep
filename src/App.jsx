@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BrowserRouter, NavLink, Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { AppProvider, useApp } from './lib/AppContext.jsx'
 import * as store from './lib/store.js'
@@ -17,6 +17,8 @@ import Library from './pages/Library.jsx'
 import Tools from './pages/Tools.jsx'
 import Settings from './pages/Settings.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
+import { Forum, ForumThread, ForumDiscuss } from './pages/Forum.jsx'
+import { newAnswerCount, getSeen } from './lib/forum.js'
 
 export default function App() {
   return (
@@ -50,6 +52,7 @@ const MAIN = [
   ['/plan', 'Plan', 'plan'],
   ['/practice', 'Practice', 'pencil'],
   ['/learn', 'Learn', 'learn'],
+  ['/forum', 'Forum', 'chat'],
 ]
 const MORE = [
   ['/companies', 'Companies', 'companies'],
@@ -65,6 +68,8 @@ function Shell() {
   const [prevPath, setPrevPath] = useState(loc.pathname)
   if (prevPath !== loc.pathname) { setPrevPath(loc.pathname); setSheet(false) }
   const moreActive = MORE.some(([p]) => loc.pathname.startsWith(p))
+  const unread = useForumBadge(loc.pathname)
+  const badge = (to) => to === '/forum' && unread > 0 && <span className="nav-badge" aria-label={`${unread} new ${unread === 1 ? 'answer' : 'answers'} on your questions`}>{unread > 9 ? '9+' : unread}</span>
 
   return (
     <div className="shell">
@@ -76,6 +81,7 @@ function Shell() {
             <Icon name={icon} size={19} />
             <span>{label}</span>
             {to === '/' && today && <span className="side-pct">{Math.round(today.pct * 100)}%</span>}
+            {badge(to)}
           </NavLink>
         ))}
         {store.isLocalMode && <p className="side-note">Preview mode: saved in this browser only.</p>}
@@ -96,6 +102,9 @@ function Shell() {
           <Route path="/banks" element={<Library />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/forum/discuss" element={<ForumDiscuss key={loc.search} />} />
+          <Route path="/forum/:id" element={<ForumThread key={loc.pathname} />} />
           <Route path="/reset" element={<ResetPassword />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -103,7 +112,7 @@ function Shell() {
 
       <nav className="tabbar" aria-label="Main">
         {MAIN.map(([to, label, icon]) => (
-          <NavLink key={to} to={to} end={to === '/'}><Icon name={icon} size={22} /><span>{label}</span></NavLink>
+          <NavLink key={to} to={to} end={to === '/'}><span className="tab-icon"><Icon name={icon} size={22} />{badge(to)}</span><span>{label}</span></NavLink>
         ))}
         <button className={moreActive || sheet ? 'active' : ''} aria-expanded={sheet} aria-controls="more-sheet" onClick={() => setSheet(!sheet)}>
           <Icon name="more" size={22} /><span>More</span>
@@ -125,4 +134,21 @@ function Shell() {
       </div>
     </div>
   )
+}
+
+// Count answers from others on my questions since I last opened the forum. Checked at most once a minute.
+function useForumBadge(pathname) {
+  const { session } = useApp()
+  const [n, setN] = useState(0)
+  const last = useRef(0)
+  const onForum = pathname.startsWith('/forum')
+  useEffect(() => {
+    if (onForum) { setN(0); return }
+    if (Date.now() - last.current < 60000) return
+    last.current = Date.now()
+    let live = true
+    newAnswerCount(session.user.id, getSeen()).then((c) => live && setN(c)).catch(() => {})
+    return () => { live = false }
+  }, [pathname, onForum, session])
+  return n
 }
