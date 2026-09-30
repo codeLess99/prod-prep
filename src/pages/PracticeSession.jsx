@@ -6,6 +6,7 @@ import { CASE_TYPES, TYPE_ORDER } from '../content/caseTypes.js'
 import { WEEKS, trackerKey } from '../content/weeks.js'
 import { GUESS_DATA } from '../content/reference.js'
 import Icon from '../components/Icon.jsx'
+import { G } from '../components/Glossary.jsx'
 
 const fmt = (s) => `${Math.floor(Math.abs(s) / 60)}:${String(Math.abs(s) % 60).padStart(2, '0')}`
 
@@ -114,7 +115,7 @@ export default function PracticeSession() {
 
       {stage === 'ready' && (
         <section className="panel ready">
-          <p>{ct.intro}</p>
+          <p><G>{ct.intro}</G></p>
           <div className="ready-row">
             <label className="mins">
               <span>Time limit</span>
@@ -153,7 +154,7 @@ export default function PracticeSession() {
                   </button>
                   {i === stepIdx && (
                     <div className="step-body">
-                      <p className="step-prompt">{s.p}</p>
+                      <p className="step-prompt"><G>{s.p}</G></p>
                       <textarea rows={4} value={notes[i] || ''} placeholder="Short notes on what you said"
                         onChange={(e) => setNotes({ ...notes, [i]: e.target.value })}
                         onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); if (i < ct.steps.length - 1) setStepIdx(i + 1); else finish() } }} />
@@ -163,7 +164,7 @@ export default function PracticeSession() {
                           ? <button className="btn small" onClick={() => setStepIdx(i + 1)}>Next step <Icon name="arrow" size={14} /></button>
                           : <button className="btn small primary" onClick={finish}>Finish and review</button>}
                       </div>
-                      {hint[i] && <p className="tip">{s.h}</p>}
+                      {hint[i] && <p className="tip"><G>{s.h}</G></p>}
                     </div>
                   )}
                 </li>
