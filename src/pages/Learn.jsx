@@ -1,11 +1,13 @@
-import { useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useApp } from '../lib/AppContext.jsx'
 import { CONCEPTS, CONCEPT_GROUPS } from '../content/concepts.js'
 import { SECTORS } from '../content/sectors.js'
 import Icon from '../components/Icon.jsx'
+import { GLOSSARY, tokenize } from '../content/glossary.js'
+import { Term, linkify } from '../components/Glossary.jsx'
 
-const TABS = [['concepts', 'Concepts'], ['cards', 'Flashcards'], ['sectors', 'Sectors']]
+const TABS = [['concepts', 'Concepts'], ['cards', 'Flashcards'], ['sectors', 'Sectors'], ['glossary', 'Glossary']]
 
 export default function Learn() {
   const [params, setParams] = useSearchParams()
@@ -14,7 +16,7 @@ export default function Learn() {
     <div className="page">
       <header className="page-head">
         <h1>Learn</h1>
-        <p className="lede">Frameworks, AI and tech basics, and sector primers. Read one concept a day, then test yourself with flashcards.</p>
+        <p className="lede">Frameworks, AI and tech basics, and sector primers. Read one concept a day, then test yourself with flashcards. Tap any <span className="term demo">underlined term</span> for a quick explanation.</p>
       </header>
       <div className="tabs big" role="tablist">
         {TABS.map(([k, l]) => (
@@ -24,14 +26,24 @@ export default function Learn() {
       {tab === 'concepts' && <Concepts />}
       {tab === 'cards' && <Flashcards />}
       {tab === 'sectors' && <Sectors />}
+      {tab === 'glossary' && <Glossary />}
     </div>
   )
 }
 
 function Concepts() {
+  const [params] = useSearchParams()
+  const target = params.get('c')
   const [group, setGroup] = useState('all')
   const [q, setQ] = useState('')
-  const [open, setOpen] = useState(null)
+  const [open, setOpen] = useState(target)
+  const refs = useRef({})
+  const [prevTarget, setPrevTarget] = useState(target)
+  if (prevTarget !== target) { setPrevTarget(target); if (target) { setOpen(target); setGroup('all'); setQ('') } }
+  useEffect(() => {
+    if (target) refs.current[target]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [target])
+
   const needle = q.trim().toLowerCase()
   const list = CONCEPTS.filter((c) => (group === 'all' || c.group === group) &&
     (!needle || (c.title + ' ' + c.summary + ' ' + c.points.join(' ')).toLowerCase().includes(needle)))
@@ -52,17 +64,19 @@ function Concepts() {
       <div className="concept-grid">
         {list.map((c) => {
           const isOpen = open === c.id
+          const seen = new Set()
+          const toggle = () => setOpen(isOpen ? null : c.id)
           return (
-            <article key={c.id} className={'concept' + (isOpen ? ' open' : '')}>
-              <button className="concept-head" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen}>
+            <article key={c.id} ref={(el) => { refs.current[c.id] = el }} className={'concept' + (isOpen ? ' open' : '')}>
+              <div className="concept-head" onClick={toggle}>
                 <span className="concept-group">{CONCEPT_GROUPS.find((g) => g.id === c.group).label}</span>
-                <span className="concept-title">{c.title}</span>
-                <span className="concept-sum">{c.summary}</span>
-              </button>
+                <button className="concept-title" onClick={(e) => { e.stopPropagation(); toggle() }} aria-expanded={isOpen}>{c.title}</button>
+                <span className="concept-sum">{linkify(c.summary, seen, c.title)}</span>
+              </div>
               {isOpen && (
                 <div className="concept-body">
-                  <ul>{c.points.map((p) => <li key={p}>{p}</li>)}</ul>
-                  {c.example && <p className="example"><strong>Example.</strong> {c.example}</p>}
+                  <ul>{c.points.map((p) => <li key={p}>{linkify(p, seen, c.title)}</li>)}</ul>
+                  {c.example && <p className="example"><strong>Example.</strong> {linkify(c.example, seen, c.title)}</p>}
                 </div>
               )}
             </article>
@@ -120,6 +134,7 @@ function Flashcards() {
             <span className="fc-text">{flipped ? card.a : card.q}</span>
             <span className="fc-hint">{flipped ? 'Answer' : 'Tap to see the answer'}</span>
           </button>
+          <CardTerms text={card.q + ' ' + (flipped ? card.a : '')} />
           <div className="fc-actions">
             <button className="btn" onClick={() => mark(false)}>Still learning</button>
             <button className="btn primary" onClick={() => mark(true)}><Icon name="check" size={16} /> I know this</button>
@@ -137,6 +152,7 @@ function Sectors() {
     <div className="sector-grid">
       {SECTORS.map((s) => {
         const isOpen = open === s.id
+        const seen = new Set()
         return (
           <article key={s.id} className={'sector' + (isOpen ? ' open' : '')}>
             <button className="concept-head" onClick={() => setOpen(isOpen ? null : s.id)} aria-expanded={isOpen}>
@@ -145,15 +161,60 @@ function Sectors() {
             </button>
             {isOpen && (
               <div className="concept-body sector-body">
-                <h3>How it works</h3><p>{s.model}</p>
-                <h3>Metrics PMs watch</h3><ul>{s.metrics.map((m) => <li key={m}>{m}</li>)}</ul>
-                <h3>Common pitfalls</h3><ul>{s.pitfalls.map((m) => <li key={m}>{m}</li>)}</ul>
-                <h3>Interview angles</h3><ul>{s.angles.map((m) => <li key={m}>{m}</li>)}</ul>
+                <h3>How it works</h3><p>{linkify(s.model, seen)}</p>
+                <h3>Metrics PMs watch</h3><ul>{s.metrics.map((m) => <li key={m}>{linkify(m, seen)}</li>)}</ul>
+                <h3>Common pitfalls</h3><ul>{s.pitfalls.map((m) => <li key={m}>{linkify(m, seen)}</li>)}</ul>
+                <h3>Interview angles</h3><ul>{s.angles.map((m) => <li key={m}>{linkify(m, seen)}</li>)}</ul>
               </div>
             )}
           </article>
         )
       })}
     </div>
+  )
+}
+
+function CardTerms({ text }) {
+  const terms = tokenize(text).filter((p) => typeof p !== 'string')
+  if (!terms.length) return null
+  return (
+    <p className="card-terms">
+      <span>Terms on this card:</span>
+      {terms.map((p) => <Term key={p.g.id} g={p.g}>{p.g.t}</Term>)}
+    </p>
+  )
+}
+
+function Glossary() {
+  const [q, setQ] = useState('')
+  const needle = q.trim().toLowerCase()
+  const list = useMemo(() => [...GLOSSARY].sort((a, b) => a.t.localeCompare(b.t)), [])
+  const shown = list.filter((g) => !needle || (g.t + ' ' + (g.full || '') + ' ' + g.m.join(' ') + ' ' + g.d).toLowerCase().includes(needle))
+  const byLetter = {}
+  shown.forEach((g) => { const L = /[a-z]/i.test(g.t[0]) ? g.t[0].toUpperCase() : '#'; (byLetter[L] = byLetter[L] || []).push(g) })
+  return (
+    <>
+      <div className="filters-row">
+        <label className="search">
+          <Icon name="search" size={18} />
+          <span className="sr-only">Search the glossary</span>
+          <input type="search" placeholder={`Search ${GLOSSARY.length} terms, e.g. CAC, churn, GMV`} value={q} onChange={(e) => setQ(e.target.value)} />
+        </label>
+      </div>
+      {!shown.length && <p className="empty">No term matches that. Try a shorter search.</p>}
+      {Object.keys(byLetter).sort().map((L) => (
+        <section key={L} className="gloss-group">
+          <h2 className="gloss-letter">{L}</h2>
+          <dl className="gloss-list">
+            {byLetter[L].map((g) => (
+              <div key={g.id} className="gloss-item">
+                <dt>{g.t}{g.full && <span className="term-full">{g.full}</span>}</dt>
+                <dd>{g.d}{g.c && <> <Link className="term-more" to={`/learn?c=${g.c}`}>Read more →</Link></>}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
+    </>
   )
 }
