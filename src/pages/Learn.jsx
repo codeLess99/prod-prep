@@ -6,6 +6,7 @@ import { SECTORS } from '../content/sectors.js'
 import Icon from '../components/Icon.jsx'
 import { GLOSSARY, tokenize } from '../content/glossary.js'
 import { Term, linkify } from '../components/Glossary.jsx'
+import { PREREQS } from '../content/prereqs.js'
 
 const TABS = [['concepts', 'Concepts'], ['cards', 'Flashcards'], ['sectors', 'Sectors'], ['glossary', 'Glossary']]
 
@@ -75,6 +76,7 @@ function Concepts() {
               </div>
               {isOpen && (
                 <div className="concept-body">
+                  <ConceptPath id={c.id} />
                   <ul>{c.points.map((p) => <li key={p}>{linkify(p, seen, c.title)}</li>)}</ul>
                   {c.example && <p className="example"><strong>Example.</strong> {linkify(c.example, seen, c.title)}</p>}
                 </div>
@@ -84,6 +86,26 @@ function Concepts() {
         })}
       </div>
     </>
+  )
+}
+
+// "Learn first" and "Leads to" links for an open concept.
+function ConceptPath({ id }) {
+  const byId = (x) => CONCEPTS.find((c) => c.id === x)
+  const before = (PREREQS[id] || []).map(byId).filter(Boolean)
+  const after = CONCEPTS.filter((c) => (PREREQS[c.id] || []).includes(id))
+  if (!before.length && !after.length) return null
+  const row = (label, list) => list.length > 0 && (
+    <p className="path-row">
+      <span className="path-label">{label}</span>
+      {list.map((c) => <Link key={c.id} className="path-chip" to={`/learn?c=${c.id}`}>{c.title}</Link>)}
+    </p>
+  )
+  return (
+    <div className="concept-path">
+      {row('Learn first', before)}
+      {row('Leads to', after)}
+    </div>
   )
 }
 
