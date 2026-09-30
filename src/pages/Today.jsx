@@ -6,6 +6,7 @@ import { WEEKS } from '../content/weeks.js'
 import Ring from '../components/Ring.jsx'
 import Icon from '../components/Icon.jsx'
 import LogButton from '../components/LogButton.jsx'
+import { dailyQuestion } from '../lib/forum.js'
 
 const TIME_TRACKER = { id: 'time', label: 'Study time', kind: 'hours', min: 0 }
 
@@ -137,6 +138,22 @@ export default function Today() {
           </div>
         </section>
       </div>
+
+      <ForumNudge />
     </div>
+  )
+}
+
+function ForumNudge() {
+  const d = dailyQuestion()
+  return (
+    <Link className="panel forum-nudge" to={`/forum/discuss?q=${encodeURIComponent(d.q)}`}>
+      <span className="forum-nudge-icon" aria-hidden="true"><Icon name="chat" size={20} /></span>
+      <span>
+        <span className="kicker">Forum question of the day</span>
+        <span className="forum-nudge-q">{d.q}</span>
+      </span>
+      <Icon name="arrow" size={18} />
+    </Link>
   )
 }
