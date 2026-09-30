@@ -67,6 +67,10 @@ Open your Vercel link, create an account, and do one practice case. Then sign in
 
 ## Optional extras
 
+**Forum.** The forum needs its own tables. In Supabase open **SQL Editor → New query**, paste everything from `supabase/forum.sql` and click **Run**. To make someone a moderator (they can hide posts and see reports), run:
+`insert into public.forum_admins (user_id) select id from auth.users where email = 'their@email.com';`
+The question of the day is picked from the practice bank by date, so it needs no setup.
+
 **Only allow your college email.** In Vercel add `VITE_ALLOWED_EMAIL_DOMAIN` (for example `yourcollege.edu`) and redeploy. Also run the optional block at the end of `schema.sql` in Supabase with your domain filled in, so the database enforces it too.
 
 **Google sign-in.** In Google Cloud Console create an OAuth client (type: Web application) with the callback URL shown in Supabase under **Authentication → Providers → Google**. Paste the client ID and secret into Supabase and enable Google. Then add `VITE_ENABLE_GOOGLE=true` in Vercel and redeploy.
