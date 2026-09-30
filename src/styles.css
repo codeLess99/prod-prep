@@ -538,3 +538,11 @@ button.concept-title:focus-visible { outline: 2px solid var(--primary); outline-
   .tabs.big::-webkit-scrollbar { display: none; }
   .tabs.big button { flex: none; padding: 0.6rem 0.75rem; white-space: nowrap; }
 }
+
+/* ---------- Learn first / Leads to ---------- */
+.concept-path { display: grid; gap: 0.4rem; margin: 0 0 0.9rem; padding: 0.65rem 0.8rem; background: var(--soft); border-radius: var(--radius); }
+.path-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0; }
+.path-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); min-width: 5.5rem; }
+.path-chip { font-size: 0.85rem; font-weight: 600; padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; }
+.path-chip:hover { border-color: var(--primary); color: var(--primary); }
+.path-chip:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
