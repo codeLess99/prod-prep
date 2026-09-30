@@ -546,3 +546,84 @@ button.concept-title:focus-visible { outline: 2px solid var(--primary); outline-
 .path-chip { font-size: 0.85rem; font-weight: 600; padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; }
 .path-chip:hover { border-color: var(--primary); color: var(--primary); }
 .path-chip:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* ---------- Forum ---------- */
+.forum-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
+.daily-card { border-color: color-mix(in srgb, var(--primary) 30%, var(--line)); background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 6%, var(--surface)), var(--surface)); }
+.daily-q { font-size: 1.3rem; line-height: 1.3; margin: 0.2rem 0 0.4rem; }
+.forum-controls { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 0.4rem 0 1rem; }
+.forum-controls .search { flex: 1 1 260px; }
+.forum-filters { display: flex; gap: 0.5rem; align-items: center; }
+.forum-filters select { width: auto; padding: 0.4rem 0.6rem; border-radius: 999px; }
+.sort-toggle button { padding: 0.35rem 0.75rem; }
+.post-list, .answer-list, .report-list { list-style: none; margin: 0 0 1rem; padding: 0; }
+.post-list { display: grid; gap: 0.5rem; }
+.post-row { display: flex; align-items: center; gap: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); transition: border-color 0.15s; }
+.post-row:hover { border-color: color-mix(in srgb, var(--primary) 45%, var(--line)); }
+.post-row.is-hidden, .answer.is-hidden, .thread-post.is-hidden { opacity: 0.7; border-style: dashed; }
+.post-link { flex: 1; min-width: 0; display: grid; gap: 0.3rem; padding: 0.85rem 0 0.85rem 1rem; color: var(--ink); text-decoration: none; }
+.post-title { font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--muted); }
+.tag-chip { display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; background: var(--soft); color: var(--ink); }
+.hidden-flag { font-weight: 700; color: var(--warn); }
+.post-stats { display: flex; flex-direction: column; gap: 0.3rem; padding-right: 1rem; min-width: 3.4rem; align-items: flex-end; }
+.stat { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.stat.has { color: var(--ink); font-weight: 650; }
+.stat.solved { color: var(--good); font-weight: 700; }
+.forum-empty { padding: 2rem 1rem; }
+.ask-form .field input, .ask-form .field textarea, .ask-form .field select { width: 100%; }
+.ask-form .field { position: relative; }
+.count { position: absolute; right: 0; top: 0; font-size: 0.78rem; color: var(--muted); }
+
+.back-link { display: inline-flex; align-items: center; gap: 0.35rem; margin-bottom: 0.9rem; color: var(--muted); text-decoration: none; font-weight: 600; }
+.back-link:hover { color: var(--primary); }
+.thread-title { font-size: clamp(1.3rem, 3vw, 1.7rem); line-height: 1.25; margin: 0.5rem 0 0.4rem; overflow-wrap: anywhere; }
+.byline { margin: 0 0 0.5rem; font-size: 0.9rem; }
+.post-text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; margin: 0.4rem 0 0.2rem; }
+.post-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; margin-top: 0.8rem; font-size: 0.9rem; }
+.post-actions .link { text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; }
+.post-actions .link:hover { text-decoration: underline; }
+.post-actions .link.subtle { color: var(--muted); font-weight: 500; }
+.link.danger { color: var(--danger); }
+.confirm { display: inline-flex; gap: 0.7rem; align-items: center; font-weight: 600; }
+.vote { display: inline-flex; align-items: center; gap: 0.3rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 0.25rem 0.7rem; font-weight: 700; cursor: pointer; font-variant-numeric: tabular-nums; }
+.vote:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+.vote.on { background: color-mix(in srgb, var(--primary) 12%, var(--surface)); border-color: var(--primary); color: var(--primary); }
+.vote:disabled { cursor: default; opacity: 0.6; }
+.bank-note { margin: 1rem 0 0; padding-top: 0.8rem; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--muted); }
+.answers-head { font-size: 1.05rem; margin: 1.4rem 0 0.7rem; }
+.answer-list { display: grid; gap: 0.7rem; }
+.answer { margin: 0; }
+.answer.accepted { border-color: color-mix(in srgb, var(--good) 55%, var(--line)); background: color-mix(in srgb, var(--good) 5%, var(--surface)); }
+.accepted-flag { display: inline-flex; align-items: center; gap: 0.3rem; margin: 0 0 0.5rem; font-size: 0.82rem; font-weight: 700; color: var(--good); }
+.answer-form textarea, .edit-form textarea, .edit-form input { width: 100%; }
+.answer-label { display: block; font-weight: 700; margin-bottom: 0.4rem; }
+.answer-foot { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.6rem; }
+.edit-form { display: grid; gap: 0.6rem; }
+.report-form { display: grid; gap: 0.5rem; margin-top: 0.8rem; padding: 0.8rem; background: var(--soft); border-radius: var(--radius); max-width: 460px; }
+.report-form label { font-weight: 600; font-size: 0.9rem; }
+.reports { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); }
+.report-list li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 0.7rem 0; border-top: 1px solid var(--line); }
+.report-reason { margin: 0.25rem 0 0; font-size: 0.88rem; }
+
+.nav-badge { min-width: 1.15rem; height: 1.15rem; padding: 0 0.3rem; border-radius: 999px; background: var(--danger); color: #fff; font-size: 0.7rem; font-weight: 700; display: inline-grid; place-items: center; line-height: 1; margin-left: auto; }
+.tab-icon { position: relative; display: inline-flex; }
+.tab-icon .nav-badge { position: absolute; top: -5px; right: -10px; margin: 0; }
+
+.forum-nudge { display: flex; align-items: center; gap: 0.9rem; text-decoration: none; color: var(--ink); }
+.forum-nudge:hover { border-color: color-mix(in srgb, var(--primary) 45%, var(--line)); }
+.forum-nudge > span:nth-child(2) { flex: 1; min-width: 0; display: grid; }
+.forum-nudge .kicker { margin: 0 0 0.15rem; }
+.forum-nudge-q { font-weight: 650; line-height: 1.35; }
+.forum-nudge-icon { width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--primary) 12%, var(--surface)); color: var(--primary); flex: none; }
+.discuss-link { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600; font-size: 0.92rem; color: var(--primary); text-decoration: none; margin-top: 0.3rem; }
+.discuss-link:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .forum-head .btn { width: 100%; justify-content: center; }
+  .sort-toggle { width: 100%; }
+  .sort-toggle button { flex: 1; padding: 0.35rem 0.4rem; font-size: 0.85rem; }
+  .post-link { padding-left: 0.85rem; }
+  .post-stats { padding-right: 0.85rem; min-width: 2.8rem; }
+  .tabbar a, .tabbar button { font-size: 0.68rem; }
+}
