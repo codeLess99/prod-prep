@@ -111,6 +111,7 @@ export default function PracticeSession() {
           <h1 className="session-q">{question}</h1>
         )}
         {(found?.l || found?.c) && <p className="muted">{[found.l, found.c && `Asked at ${found.c}`].filter(Boolean).join('. ')}</p>}
+        {found && <Link className="discuss-link" to={`/forum/discuss?q=${encodeURIComponent(found.q)}`}><Icon name="chat" size={15} /> See how others approached it</Link>}
       </header>
 
       {stage === 'ready' && (
