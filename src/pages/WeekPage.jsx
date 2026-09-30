@@ -7,6 +7,7 @@ import { CASE_TYPES } from '../content/caseTypes.js'
 import { WEEK_TIPS } from '../content/reference.js'
 import LogButton, { Meter } from '../components/LogButton.jsx'
 import EntryList from '../components/EntryList.jsx'
+import { G } from '../components/Glossary.jsx'
 
 const TIME_TRACKER = { id: 'time', label: 'Study time', kind: 'hours', min: 0 }
 
@@ -131,7 +132,7 @@ export default function WeekPage() {
 
       <section className="panel tips">
         <h2>Tips for this week</h2>
-        <ul className="tip-list">{WEEK_TIPS[week.n].map((t) => <li key={t}>{t}</li>)}</ul>
+        <ul className="tip-list">{WEEK_TIPS[week.n].map((t) => <li key={t}><G>{t}</G></li>)}</ul>
       </section>
 
       {week.companyFocus && (
